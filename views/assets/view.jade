@@ -1,0 +1,92 @@
+extends ../layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h2= asset.name
+    div
+      a.btn.btn-warning.me-2(href='/assets/' + asset.id + '/edit')
+        i.bi.bi-pencil.me-1
+        | Edit
+      a.btn.btn-secondary(href='/assets') Back
+
+  .row
+    .col-md-6
+      .card.mb-4
+        .card-header Asset Details
+        .card-body
+          table.table.table-borderless
+            tr
+              th.w-25 Serial No
+              td= asset.serial_number
+            tr
+              th Name
+              td= asset.name
+            tr
+              th Category
+              td= asset.category ? asset.category.name : '-'
+            tr
+              th Make
+              td= asset.make || '-'
+            tr
+              th Model
+              td= asset.model || '-'
+            tr
+              th Warranty Expiry
+              td= asset.warranty_expiry_date || '-'
+            tr
+              th Condition
+              td= asset.condition
+            tr
+              th Status
+              td
+                if asset.status === 'In Stock'
+                  span.badge.bg-success In Stock
+                else if asset.status === 'Issued'
+                  span.badge.bg-primary Issued
+                else if asset.status === 'Scrapped'
+                  span.badge.bg-danger Scrapped
+            tr
+              th Notes
+              td= asset.notes || '-'
+
+    .col-md-6
+      .card.mb-4
+        .card-header Assignment History
+        .card-body
+          if assignments && assignments.length
+            table.table.table-sm
+              thead
+                tr
+                  th Employee
+                  th Issued By
+                  th Issue Date
+                  th Return Date
+                  th Reason
+              tbody
+                each a in assignments
+                  tr
+                    td= a.employee ? a.employee.name : '-'
+                    td= a.issuedByUser ? a.issuedByUser.name : '-'
+                    td= a.issue_date
+                    td= a.return_date || 'Current'
+                    td= a.return_reason || '-'
+          else
+            p.text-muted No assignment history
+
+      if scrap
+        .card
+          .card-header.bg-danger.text-white Scrap Details
+          .card-body
+            table.table.table-borderless
+              tr
+                th Scrapped By
+                td= scrap.scrappedByUser ? scrap.scrappedByUser.name : '-'
+              tr
+                th Scrap Date
+                td= scrap.scrap_date
+              tr
+                th Reason
+                td= scrap.reason || '-'
+              tr
+                th Notes
+                td= scrap.notes || '-'

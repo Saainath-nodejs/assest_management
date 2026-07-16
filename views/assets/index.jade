@@ -1,0 +1,72 @@
+extends ../layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h2 Assets
+    a.btn.btn-primary(href='/assets/add')
+      i.bi.bi-plus-lg.me-1
+      | Add Asset
+
+  .card.mb-3
+    .card-body
+      form.row.g-3(method='GET', action='/assets')
+        .col-md-3
+          select.form-select(name='category')
+            option(value='') All Categories
+            each cat in categories
+              option(value=cat.id, selected=(filters.category == cat.id))= cat.name
+        .col-md-2
+          select.form-select(name='status')
+            option(value='all', selected=(filters.status === 'all' || !filters.status)) All Status
+            option(value='In Stock', selected=(filters.status === 'In Stock')) In Stock
+            option(value='Issued', selected=(filters.status === 'Issued')) Issued
+            option(value='Scrapped', selected=(filters.status === 'Scrapped')) Scrapped
+        .col-md-5
+          input.form-control(type='text', name='search', placeholder='Search by name, serial, make, model...', value=(filters.search || ''))
+        .col-md-2
+          button.btn.btn-outline-primary.w-100(type='submit') Filter
+
+  if error
+    .alert.alert-danger= error
+
+  table.table.table-striped.table-hover#assetTable
+    thead
+      tr
+        th Serial No
+        th Name
+        th Category
+        th Make
+        th Model
+        th Condition
+        th Status
+        th Actions
+    tbody
+      each asset in assets
+        tr
+          td= asset.serial_number
+          td= asset.name
+          td= asset.category ? asset.category.name : '-'
+          td= asset.make || '-'
+          td= asset.model || '-'
+          td= asset.condition
+          td
+            if asset.status === 'In Stock'
+              span.badge.bg-success In Stock
+            else if asset.status === 'Issued'
+              span.badge.bg-primary Issued
+            else if asset.status === 'Scrapped'
+              span.badge.bg-danger Scrapped
+          td
+            a.btn.btn-sm.btn-info.me-1(href='/assets/' + asset.id)
+              i.bi.bi-eye
+            a.btn.btn-sm.btn-warning(href='/assets/' + asset.id + '/edit')
+              i.bi.bi-pencil
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#assetTable').DataTable({
+        pageLength: 25,
+        order: [[1, 'asc']]
+      });
+    });

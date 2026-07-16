@@ -1,0 +1,67 @@
+extends ../layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h2= employee.name
+    div
+      a.btn.btn-warning.me-2(href='/employees/' + employee.id + '/edit')
+        i.bi.bi-pencil.me-1
+        | Edit
+      a.btn.btn-secondary(href='/employees') Back
+
+  .row
+    .col-md-6
+      .card.mb-4
+        .card-header Employee Details
+        .card-body
+          table.table.table-borderless
+            tr
+              th.w-25 Code
+              td= employee.employee_code
+            tr
+              th Name
+              td= employee.name
+            tr
+              th Email
+              td= employee.email || '-'
+            tr
+              th Phone
+              td= employee.phone || '-'
+            tr
+              th Department
+              td= employee.department || '-'
+            tr
+              th Designation
+              td= employee.designation || '-'
+            tr
+              th Branch
+              td= employee.branch || '-'
+            tr
+              th Status
+              td
+                if employee.status === 'active'
+                  span.badge.bg-success Active
+                else
+                  span.badge.bg-secondary Inactive
+
+    .col-md-6
+      .card
+        .card-header Assigned Assets
+        .card-body
+          if assignments && assignments.length
+            table.table.table-sm
+              thead
+                tr
+                  th Asset
+                  th Category
+                  th Issued
+                  th Returned
+              tbody
+                each a in assignments
+                  tr
+                    td= a.asset ? a.asset.name : '-'
+                    td= a.asset && a.asset.category ? a.asset.category.name : '-'
+                    td= a.issue_date
+                    td= a.return_date || 'Current'
+          else
+            p.text-muted No assets assigned

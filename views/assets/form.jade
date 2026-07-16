@@ -1,0 +1,51 @@
+extends ../layout
+
+block content
+  h2= asset ? 'Edit Asset' : 'Add Asset'
+
+  if error
+    .alert.alert-danger= error
+
+  .card
+    .card-body
+      form(method=method, action=action)
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='serial_number') Serial Number *
+            input.form-control#serial_number(type='text', name='serial_number', value=(asset ? asset.serial_number : ''), required)
+          .col-md-6.mb-3
+            label.form-label(for='name') Asset Name *
+            input.form-control#name(type='text', name='name', value=(asset ? asset.name : ''), required)
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='asset_category_id') Category *
+            select.form-select#asset_category_id(name='asset_category_id', required)
+              option(value='') Select Category
+              each cat in categories
+                option(value=cat.id, selected=(asset && asset.asset_category_id == cat.id))= cat.name
+          .col-md-3.mb-3
+            label.form-label(for='make') Make
+            input.form-control#make(type='text', name='make', value=(asset ? asset.make : ''))
+          .col-md-3.mb-3
+            label.form-label(for='model') Model
+            input.form-control#model(type='text', name='model', value=(asset ? asset.model : ''))
+        .row
+          .col-md-4.mb-3
+            label.form-label(for='warranty_expiry_date') Warranty Expiry Date
+            input.form-control#warranty_expiry_date(type='date', name='warranty_expiry_date', value=(asset ? asset.warranty_expiry_date : ''))
+          .col-md-4.mb-3
+            label.form-label(for='condition') Condition
+            select.form-select#condition(name='condition')
+              each cond in ['New', 'Good', 'Fair', 'Poor']
+                option(value=cond, selected=(asset && asset.condition === cond))= cond
+          .col-md-4.mb-3
+            label.form-label(for='status') Status
+            select.form-select#status(name='status')
+              each st in ['In Stock', 'Issued', 'Scrapped']
+                option(value=st, selected=(asset && asset.status === st))= st
+        .mb-3
+          label.form-label(for='notes') Notes
+          textarea.form-control#notes(name='notes', rows='3')= asset ? asset.notes : ''
+        .mt-3
+          button.btn.btn-primary(type='submit')= asset ? 'Update' : 'Create'
+          a.btn.btn-secondary.ms-2(href='/assets') Cancel

@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+  h2= category ? 'Edit Category' : 'Add Category'
+
+  if error
+    .alert.alert-danger= error
+
+  .card
+    .card-body
+      form(method=method, action=action)
+        .mb-3
+          label.form-label(for='name') Category Name *
+          input.form-control#name(type='text', name='name', value=(category ? category.name : ''), required)
+        .mb-3
+          label.form-label(for='description') Description
+          textarea.form-control#description(name='description', rows='3')= category ? category.description : ''
+        .mt-3
+          button.btn.btn-primary(type='submit')= category ? 'Update' : 'Create'
+          a.btn.btn-secondary.ms-2(href='/categories') Cancel

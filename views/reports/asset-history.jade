@@ -1,0 +1,84 @@
+extends ../layout
+
+block content
+  h2 Asset History
+
+  if error
+    .alert.alert-danger= error
+
+  .card.mb-4
+    .card-body
+      form.row.g-3(method='GET', action='/reports/asset-history')
+        .col-md-8
+          select.form-select(name='asset_id', required)
+            option(value='') Select an Asset
+            each a in allAssets
+              option(value=a.id, selected=(selectedAssetId == a.id)) #{a.serial_number} - #{a.name} (#{a.category ? a.category.name : ''}) [#{a.status}]
+        .col-md-4
+          button.btn.btn-primary.w-100(type='submit') View History
+
+  if asset
+    .card.mb-4
+      .card-header
+        h5.mb-0 #{asset.name} (#{asset.serial_number})
+      .card-body
+        .row.mb-3
+          .col-md-3
+            strong Category:
+            |  #{asset.category ? asset.category.name : '-'}
+          .col-md-3
+            strong Make:
+            |  #{asset.make || '-'}
+          .col-md-3
+            strong Model:
+            |  #{asset.model || '-'}
+          .col-md-3
+            strong Current Status:
+            | 
+            if asset.status === 'In Stock'
+              span.badge.bg-success In Stock
+            else if asset.status === 'Issued'
+              span.badge.bg-primary Issued
+            else if asset.status === 'Scrapped'
+              span.badge.bg-danger Scrapped
+
+    .card
+      .card-header Timeline
+      .card-body
+        if history && history.length
+          table.table#historyTable
+            thead
+              tr
+                th Date
+                th Event
+                th Details
+            tbody
+              each h in history
+                tr
+                  td= h.date
+                  td
+                    if h.type === 'created'
+                      span.badge.bg-info= h.event
+                    else if h.type === 'issued'
+                      span.badge.bg-primary= h.event
+                    else if h.type === 'returned'
+                      span.badge.bg-warning.text-dark= h.event
+                    else if h.type === 'scrapped'
+                      span.badge.bg-danger= h.event
+                    else
+                      span.badge.bg-secondary= h.event
+                  td= h.details
+        else
+          p.text-muted No history available for this asset
+
+block scripts
+  script.
+    $(document).ready(function() {
+      if ($('#historyTable').length) {
+        $('#historyTable').DataTable({
+          pageLength: 50,
+          order: [[0, 'asc']],
+          paging: false
+        });
+      }
+    });

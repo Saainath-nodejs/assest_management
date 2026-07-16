@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h2 Asset Categories
+    a.btn.btn-primary(href='/categories/add')
+      i.bi.bi-plus-lg.me-1
+      | Add Category
+
+  if error
+    .alert.alert-danger= error
+
+  table.table.table-striped.table-hover#categoryTable
+    thead
+      tr
+        th Name
+        th Description
+        th Actions
+    tbody
+      each category in categories
+        tr
+          td= category.name
+          td= category.description || '-'
+          td
+            a.btn.btn-sm.btn-warning(href='/categories/' + category.id + '/edit')
+              i.bi.bi-pencil
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#categoryTable').DataTable();
+    });

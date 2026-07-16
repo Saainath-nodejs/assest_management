@@ -1,0 +1,48 @@
+extends ../layout
+
+block content
+  h2 Stock View
+  p.text-muted Assets currently in stock and ready to issue
+
+  if error
+    .alert.alert-danger= error
+
+  .row.mb-4
+    each count, catName in categoryTotals
+      .col-md-3.mb-3
+        .card.text-center
+          .card-body
+            h5.card-title= catName
+            h2.text-primary= count
+
+  table.table.table-striped.table-hover#stockTable
+    thead
+      tr
+        th Serial No
+        th Name
+        th Category
+        th Make
+        th Model
+        th Condition
+    tbody
+      each asset in assets
+        tr
+          td= asset.serial_number
+          td= asset.name
+          td= asset.category ? asset.category.name : '-'
+          td= asset.make || '-'
+          td= asset.model || '-'
+          td= asset.condition
+    tfoot
+      tr
+        th(colspan='5') Total In Stock
+        th= totalCount
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#stockTable').DataTable({
+        pageLength: 25,
+        order: [[2, 'asc'], [1, 'asc']]
+      });
+    });

@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+  h2 Issue Asset
+
+  if success
+    .alert.alert-success= success
+  if error
+    .alert.alert-danger= error
+
+  .card
+    .card-body
+      form(method='POST', action='/assignments/issue')
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='employee_id') Employee *
+            select.form-select#employee_id(name='employee_id', required)
+              option(value='') Select Employee
+              each emp in employees
+                option(value=emp.id) #{emp.employee_code} - #{emp.name}
+          .col-md-6.mb-3
+            label.form-label(for='asset_id') Asset (In Stock) *
+            select.form-select#asset_id(name='asset_id', required)
+              option(value='') Select Asset
+              each asset in assets
+                option(value=asset.id) #{asset.serial_number} - #{asset.name} (#{asset.category ? asset.category.name : ''})
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='issue_date') Issue Date *
+            input.form-control#issue_date(type='date', name='issue_date', required)
+          .col-md-6.mb-3
+            label.form-label(for='notes') Notes
+            input.form-control#notes(type='text', name='notes')
+        .mt-3
+          button.btn.btn-primary(type='submit')
+            i.bi.bi-arrow-right-circle.me-1
+            | Issue Asset

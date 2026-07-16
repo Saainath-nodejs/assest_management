@@ -1,0 +1,40 @@
+extends ../layout
+
+block content
+  h2 Return Asset
+
+  if success
+    .alert.alert-success= success
+  if error
+    .alert.alert-danger= error
+
+  .card
+    .card-body
+      if assignments && assignments.length
+        form(method='POST', action='/assignments/return')
+          .row
+            .col-md-6.mb-3
+              label.form-label(for='assignment_id') Currently Issued Asset *
+              select.form-select#assignment_id(name='assignment_id', required)
+                option(value='') Select Asset
+                each a in assignments
+                  option(value=a.id) #{a.asset ? a.asset.serial_number + ' - ' + a.asset.name : ''} → #{a.employee ? a.employee.name : ''}
+            .col-md-6.mb-3
+              label.form-label(for='return_date') Return Date *
+              input.form-control#return_date(type='date', name='return_date', required)
+          .row
+            .col-md-6.mb-3
+              label.form-label(for='return_reason') Return Reason *
+              select.form-select#return_reason(name='return_reason', required)
+                option(value='') Select Reason
+                each reason in ['Upgrade', 'Repair', 'Resignation', 'Transfer', 'Damaged', 'Other']
+                  option(value=reason)= reason
+            .col-md-6.mb-3
+              label.form-label(for='notes') Notes
+              input.form-control#notes(type='text', name='notes')
+          .mt-3
+            button.btn.btn-warning(type='submit')
+              i.bi.bi-arrow-left-circle.me-1
+              | Return Asset
+      else
+        .alert.alert-info No assets are currently issued

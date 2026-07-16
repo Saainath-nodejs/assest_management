@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+  h2= employee ? 'Edit Employee' : 'Add Employee'
+
+  if error
+    .alert.alert-danger= error
+
+  .card
+    .card-body
+      form(method=method, action=action)
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='employee_code') Employee Code *
+            input.form-control#employee_code(type='text', name='employee_code', value=(employee ? employee.employee_code : ''), required)
+          .col-md-6.mb-3
+            label.form-label(for='name') Name *
+            input.form-control#name(type='text', name='name', value=(employee ? employee.name : ''), required)
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='email') Email
+            input.form-control#email(type='email', name='email', value=(employee ? employee.email : ''))
+          .col-md-6.mb-3
+            label.form-label(for='phone') Phone
+            input.form-control#phone(type='text', name='phone', value=(employee ? employee.phone : ''))
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='department') Department
+            input.form-control#department(type='text', name='department', value=(employee ? employee.department : ''))
+          .col-md-6.mb-3
+            label.form-label(for='designation') Designation
+            input.form-control#designation(type='text', name='designation', value=(employee ? employee.designation : ''))
+        .row
+          .col-md-6.mb-3
+            label.form-label(for='branch') Branch
+            input.form-control#branch(type='text', name='branch', value=(employee ? employee.branch : ''))
+          .col-md-6.mb-3
+            label.form-label(for='status') Status
+            select.form-select#status(name='status')
+              option(value='active', selected=(employee && employee.status === 'active')) Active
+              option(value='inactive', selected=(employee && employee.status === 'inactive')) Inactive
+        .mt-3
+          button.btn.btn-primary(type='submit')= employee ? 'Update' : 'Create'
+          a.btn.btn-secondary.ms-2(href='/employees') Cancel
